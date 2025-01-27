@@ -1,0 +1,31 @@
+{% extends 'dashbase.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Manage Articles</h1>
+    <a href="{% url 'admin:newsapp_article_add' %}" class="btn btn-success mb-3">Add Article</a>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Published Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for article in articles %}
+            <tr>
+                <td>{{ article.title }}</td>
+                <td>{{ article.author }}</td>
+                <td>{{ article.published_date|date:"F j, Y" }}</td>
+                <td>
+                    <a href="{% url 'admin:newsapp_article_change' article.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'admin:newsapp_article_delete' article.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

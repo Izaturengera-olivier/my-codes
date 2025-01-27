@@ -1,0 +1,29 @@
+{% extends 'dashbase.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Manage Messages</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sender Name</th>
+                <th>Sender Email</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Sent At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for message in messages %}
+            <tr>
+                <td>{{ message.sender_name }}</td>
+                <td>{{ message.sender_email }}</td>
+                <td>{{ message.subject }}</td>
+                <td>{{ message.message }}</td>
+                <td>{{ message.sent_at|date:"F j, Y, g:i a" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

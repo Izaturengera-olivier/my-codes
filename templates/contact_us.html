@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <center>
+<div class="container mt-5">
+    <h1>Contact Us</h1>
+    <p>Have questions or feedback? Fill out the form below, and we’ll get back to you!</p>
+    <form method="POST" novalidate action="{% url 'contact_us' %}" class="mt-5" style="max-width: 500px; background-color:blue; padding: 20px; border-radius: 5px;color: white; ">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+    {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+                <div class="alert alert-success">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+    </center>
+{% endblock %}

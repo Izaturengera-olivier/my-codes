@@ -1,0 +1,41 @@
+{% extends 'dashbase.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Admin Dashboard</h1>
+    <div class="row">
+        <div class="col-md-3">
+            <a href="{% url 'manage_news' %}" class="card text-center text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">News</h5>
+                    <p class="card-text fs-3">{{ news_count }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'manage_articles' %}" class="card text-center text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Articles</h5>
+                    <p class="card-text fs-3">{{ articles_count }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'manage_messages' %}" class="card text-center text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Messages</h5>
+                    <p class="card-text fs-3">{{ messages_count }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="{% url 'manage_users' %}" class="card text-center text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text fs-3">{{ users_count }}</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

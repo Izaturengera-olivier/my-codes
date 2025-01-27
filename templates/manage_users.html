@@ -1,0 +1,32 @@
+{% extends 'dashbase.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Manage Users</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Is Admin</th>
+                <th>Date Joined</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.is_admin }}</td>
+                <td>{{ user.date_joined|date:"F j, Y" }}</td>
+                <td>
+                    <a href="{% url 'admin:newsapp_user_change' user.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'admin:newsapp_user_delete' user.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

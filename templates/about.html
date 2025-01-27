@@ -1,0 +1,137 @@
+
+<!-- about.html -->
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <style>
+
+css
+/* styles.css */
+.container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 28px;
+    margin-top: 30px;
+    color: #333;
+}
+
+p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+}
+
+ul.list-unstyled {
+    font-size: 16px;
+    color: #555;
+}
+
+ul.list-unstyled li {
+    margin-bottom: 10px;
+}
+
+ul.list-unstyled li i {
+    color: #28a745;
+    margin-right: 10px;
+}
+
+.card {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.card-img-top {
+    max-height: 250px;
+    object-fit: cover;
+}
+
+.card-body {
+    text-align: center;
+}
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 14px;
+    color: #777;
+}
+
+.text-center a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+}
+
+    </style>
+    <div class="container py-5">
+        <h1 class="text-center mb-4">About Us</h1>
+
+        <!-- Section 1: Introduction -->
+        <section class="mb-5">
+            <h3>Who We Are</h3>
+            <p>
+                Welcome to <strong>NewsWebsite</strong>, your go-to source for the latest news, updates, and insights
+                from around the world. Our mission is to deliver reliable and timely news to keep you informed about
+                what's happening in politics, business, sports, entertainment, and more.
+            </p>
+        </section>
+
+        <!-- Section 2: Mission -->
+        <section class="mb-5">
+            <h3>Our Mission</h3>
+            <p>
+            At NewsWebsite, we strive to provide accurate, unbiased, and up-to-date news. We are committed to delivering
+                insightful reporting on current events while maintaining the highest standards of journalism.
+            </p>
+        </section>
+
+        <!-- Section 3: Values -->
+        <section class="mb-5">
+            <h3>Our Values</h3>
+            <ul class="list-unstyled">
+                <li><i class="bi bi-check-circle"></i> Integrity: We uphold the truth and transparency in all our reporting.</li>
+                <li><i class="bi bi-check-circle"></i> Accountability: We take responsibility for our content and its impact.</li>
+                <li><i class="bi bi-check-circle"></i> Excellence: We provide high-quality, thorough, and well-researched articles.</li>
+                <li><i class="bi bi-check-circle"></i> Diversity: We embrace diverse perspectives and ideas.</li>
+            </ul>
+        </section>
+
+        <!-- Section 4: Meet the Team -->
+        <section class="mb-5">
+            <h3>Meet the Team</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="{% static 'team.jpeg' %}" class="card-img-top" alt="Team Member 1" style="height: 250px; object-fit: cover;">
+            <p class="card-text">Head of Digital Content - Michael manages the online presence and strategy for NewsWebsite.</p>
+                        </div>
+                    </div>
+                </div>
+
+        </section>
+
+        <!-- Section 5: Contact Us CTA -->
+        <section class="text-center">
+            <h3>Get in Touch</h3>
+            <p>If you have any questions or feedback, feel free to <a href="{% url 'contact_us' %}">contact us</a>.</p>
+        </section>
+    </div>
+{% endblock %}
+
+
+

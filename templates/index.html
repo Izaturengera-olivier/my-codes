@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="text-center" style="color: blue;">Welcome to our news website!</h1>
+
+<div class="container mt-5">
+    <h1 class="mb-4">Latest News</h1>
+    <div class="row">
+        {% for article in news %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    {% if article.image %}
+                        <img src="{{ article.image.url }}" class="card-img-top" alt="News Image" height="350">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">By {{ article.author }} on {{ article.published_date|date:"F j, Y" }}</small>
+                        </p>
+                        <p class="card-text">{{ article.summary|truncatewords:20 }}</p>
+                        <a href="{% url 'news_detail' article.id %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No news articles are available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
