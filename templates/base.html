@@ -46,19 +46,22 @@ footer .fab:hover {
      </ul>
 
         <nav>
+    {% if user.is_authenticated %}
+        Welcome, {{ user.username }}!
 
-        {% if user.is_authenticated %}
-            Welcome, {{ user.username }}!
-
-                <form method="POST" action="{% url 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Logout</button>
-                </form>
-
-        {% else %}
-            <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
-            <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+        {% if user.is_superuser %}
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-info">Dashboard</a>
         {% endif %}
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+
+    {% else %}
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+        <a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+    {% endif %}
 
 </nav>
 

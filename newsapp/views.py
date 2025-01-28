@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -59,7 +60,7 @@ def signup_view(request):
 def home_view(request):
     return render(request, 'home.html')
 
-
+@login_required
 def contact_us(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -72,7 +73,7 @@ def contact_us(request):
 
     return render(request, 'contact_us.html', {'form': form})
 
-
+@login_required
 def news_list(request):
     news = News.objects.all().order_by('-published_date')  # Order by latest news
     return render(request, 'index.html', {'news': news})
@@ -186,34 +187,146 @@ def is_superuser(user):
     return user.is_superuser
 
 
-@user_passes_test(is_superuser)
+@login_required
 def admin_dashboard(request):
-    news_count = News.objects.count()
-    articles_count = Article.objects.count()
-    messages_count = ContactMessage.objects.count()
-    users_count = User.objects.filter(is_superuser=False).count()
-    return render(request, 'admin_dashboard.html', {
-        'news_count': news_count,
-        'articles_count': articles_count,
-        'messages_count': messages_count,
-        'users_count': users_count
-    })
+    # Ensure only admin users can access this view
+    if not request.user.is_staff:
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    # Sample data for the charts
+    chart_data = {
+        'labels': ['News', 'Articles', 'Messages', 'Users'],
+        'values': [
+            News.objects.count(),
+            Article.objects.count(),
+            ContactMessage.objects.count(),
+            User.objects.count()
+        ]
+    }
+
+    context = {
+        'news_count': News.objects.count(),
+        'articles_count': Article.objects.count(),
+        'messages_count': ContactMessage.objects.count(),
+        'users_count': User.objects.count(),
+        'chart_data': chart_data,
+    }
+
+    return render(request, 'admin_dashboard.html', context)
+
+
 @user_passes_test(is_superuser)
 def manage_news(request):
     news = News.objects.all()
     return render(request, 'manage_news.html', {'news': news})
+
+
 @user_passes_test(is_superuser)
 def manage_articles(request):
     articles = Article.objects.all()
     return render(request, 'manage_articles.html', {'articles': articles})
+
 
 @user_passes_test(is_superuser)
 def manage_messages(request):
     messages = ContactMessage.objects.all()
     return render(request, 'manage_messages.html', {'messages': messages})
 
+
 @user_passes_test(is_superuser)
 def manage_users(request):
     users = User.objects.filter(is_superuser=False)
     return render(request, 'manage_users.html', {'users': users})
 
+def reply_message(request, message_id):
+    message = get_object_or_404(ContactMessage, pk=message_id)
+    if request.method == 'POST':
+        form = ReplyMessageForm(request.POST)
+        if form.is_valid():
+            reply_message = form.cleaned_data['reply_message']
+            recipient_email = form.cleaned_data['recipient_email']
+
+            try:
+                subject = f"Re: {message.subject}"
+                send_mail(
+                    subject,
+                    reply_message,
+                    'izaturengeraolivier@gmail.com',
+                    [recipient_email],
+                    fail_silently=False,
+                )
+                return redirect('message_list')
+            except Exception as e:
+                # Log the error for debugging
+                print(f"Error sending email: {e}")
+                # Display an error message to the user
+                messages.error(request, "Reply message sent successfully.")
+        else:
+            messages.error(request, "Invalid form data.")
+    else:
+        form = ReplyMessageForm(initial={
+            'recipient_email': message.email,
+            'original_message': message.message,
+        })
+    return render(request, 'reply_message.html', {'message': message, 'form': form})
+
+
+@login_required
+def deactivate_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if user.is_superuser:
+        messages.error(request, "Cannot deactivate the superuser.")
+    else:
+        user.is_active = False
+        user.save()
+        messages.success(request, f"User '{user.username}' deactivated successfully.")
+    return redirect('manage_users')
+
+
+@login_required
+def activate_user(request, user_id):
+    user = User.objects.get(pk=user_id)
+    user.is_active = True
+    user.save()
+    messages.success(request, f"User '{user.username}' activated successfully.")
+    return redirect('manage_users')
+
+
+@login_required
+def make_admin(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if not user.is_superuser:  # Prevent making the superuser an admin again
+        user.is_staff = True
+        user.save()
+        messages.success(request, f"User '{user.username}' granted admin privileges.")
+    else:
+        messages.error(request, "User is already an administrator.")
+    return redirect('manage_users')
+
+
+@login_required
+def revoke_admin(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if user.is_superuser:
+        messages.error(request, "Cannot revoke admin privileges from the superuser.")
+    else:
+        user.is_staff = False
+        user.save()
+        messages.success(request, f"Admin privileges revoked from user '{user.username}'.")
+    return redirect('manage_users')
+
+
+@login_required
+def delete_account(request, user_id):
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        messages.error(request, "User not found.")
+        return redirect('manage_users')
+
+    if request.method == 'POST':
+        user.delete()
+        messages.success(request, "User account deleted successfully.")
+        return redirect('manage_users')
+
+    return render(request, 'delete_account.html', {'user': user})

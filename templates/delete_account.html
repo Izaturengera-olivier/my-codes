@@ -1,0 +1,52 @@
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 400px;
+        }
+        .card-header {
+            font-size: 1.5rem;
+            padding: 20px;
+        }
+        .card-body {
+            padding: 20px;
+        }
+        .btn-danger {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header bg-danger text-white text-center">
+                <h1 class="mb-0">Delete Account</h1>
+            </div>
+            <div class="card-body">
+                <p class="text-center">Are you sure you want to delete your account, <strong>{{ user.username }}</strong>? This action is irreversible.</p>
+                <form method="post" class="text-center">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{% endblock %}

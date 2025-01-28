@@ -56,3 +56,14 @@ class PasswordResetForm(forms.Form):
 
 class SearchForm(forms.Form):
     query = forms.CharField(max_length=100, required=False, label="Search")
+class ReplyMessageForm(forms.Form):
+    recipient_email = forms.EmailField(widget=forms.HiddenInput)
+    original_message = forms.CharField(widget=forms.HiddenInput)
+    reply_message = forms.CharField(widget=forms.Textarea, label="Your Reply:")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Set initial values for hidden fields if they are provided
+        if 'initial' in kwargs:
+            self.fields['recipient_email'].initial = kwargs['initial'].get('recipient_email')
+            self.fields['original_message'].initial = kwargs['initial'].get('original_message')

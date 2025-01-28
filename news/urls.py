@@ -25,15 +25,21 @@ urlpatterns = [
     path('logout/', lambda request: logout(request) or redirect('login'), name='logout'),
     path('privacy-policy/', privacy_policy, name='privacy_policy'),
     path('password_reset/', password_reset_request, name='password_reset'),
+    path('messages/<int:message_id>/reply/', reply_message, name='reply_message'),
 
     path('password_reset/', password_reset_request, name='password_reset_request'),
     path('password_reset_verify/', password_reset_verify, name='password_reset_verify'),
-path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
+    path('admin-dashboard/', admin_dashboard, name='admin_dashboard'),
     # Add URLs for specific menus
     path('manage-news/', manage_news, name='manage_news'),
     path('manage-articles/', manage_articles, name='manage_articles'),
     path('manage-messages/', manage_messages, name='manage_messages'),
     path('manage-users/', manage_users, name='manage_users'),
+    path('deactivate_user/<int:user_id>/', deactivate_user, name='deactivate_user'),
+    path('activate_user/<int:user_id>/', activate_user, name='activate_user'),
+    path('make_admin/<int:user_id>/', make_admin, name='make_admin'),
+    path('revoke_admin/<int:user_id>/', revoke_admin, name='revoke_admin'),
+    path('delete_account/<int:user_id>/', delete_account, name='delete_user'),
 
 ]
 if settings.DEBUG:
