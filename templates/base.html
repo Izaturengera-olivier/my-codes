@@ -65,15 +65,25 @@ footer .fab:hover {
 
 </nav>
 
+    <form action="{% url 'search' %}" method="GET" class="d-flex">
+    <input type="text" name="q" class="form-control me-2" placeholder="Search news..." required>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
-     <form method="get" action="{% url 'search' %}" class="mb-4" style="margin-top: 20px;">
-            {% csrf_token %}
-            <div class="input-group">
-                <input type="text" name="query" class="form-control" value="{{ query }}" placeholder="Search for articles..." required>
-                <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </form>
+    {% if results %}
+        <ul class="list-group">
+            {% for article in results %}
+                <li class="list-group-item">
+                    <h4><a href="{% url 'news_detail' article.id %}">{{ article.title }}</a></h4>
+                    <p>{{ article.title|truncatewords:30 }}</p>
 
+
+                </li>
+                  <img src="{{ article.image.url }}" alt="{{ article.title }}" width="100" height="100">
+            {% endfor %}
+        </ul>
+
+    {% endif %}
 
 
 
@@ -84,43 +94,57 @@ footer .fab:hover {
 </nav>
 	{% block content %}
 	{% endblock %}
- {% if articles %}
-            <div class="list-group">
-                {% for article in articles %}
-                    <a href="{% url 'article_detail' article.id %}" class="list-group-item list-group-item-action">
-                        <h5>{{ article.title }}</h5>
-                        <p>{{ article.short_description }}</p>
-                    </a>
-                {% endfor %}
+{# {% if articles %}#}
+{#            <div class="list-group">#}
+{#                {% for article in articles %}#}
+{#                    <a href="{% url 'article_detail' article.id %}" class="list-group-item list-group-item-action">#}
+{#                        <h5>{{ article.title }}</h5>#}
+{#                        <p>{{ article.short_description }}</p>#}
+{#                    </a>#}
+{#                {% endfor %}#}
+{#            </div>#}
+{#        {% else %}#}
+{#            <p>No results found for "{{ query }}".</p>#}
+{#        {% endif %}#}
+
+<section class="bg-primary text-white py-5">
+    <div class="container d-flex flex-column align-items-center">
+        <h2 class="mb-3 text-uppercase fw-bold">SUBSCRIBE</h2>
+        <p class="text-center">Do you want to get news about our upcoming application and news?</p>
+
+        <form action="{% url 'subscribe' %}" method="POST" class="w-50">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" name="full_name" class="form-control rounded-3 p-3"
+                    placeholder="Enter your full name" required>
             </div>
-        {% else %}
-            <p>No results found for "{{ query }}".</p>
-        {% endif %}
+            <div class="mb-3">
+                <input type="email" name="email" class="form-control rounded-3 p-3"
+                    placeholder="Enter your email address" required>
+            </div>
+            <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">SUBSCRIBE</button>
+        </form>
+    </div>
+</section>
 
-
-<!-- footer.html -->
 <footer class="bg-dark text-white py-4 mt-5">
     <div class="container">
         <div class="row">
-            <!-- Footer Left: Website Name & Copyright -->
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <h3 class="mb-3">NewsWebsite</h3>
                 <p>&copy; 2025 NewsWebsite. All rights reserved.</p>
             </div>
 
-            <!-- Footer Middle: Navigation Links -->
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <ul class="list-unstyled">
                     <li><a href="{% url 'about' %}" class="text-white">About Us</a></li>
                     <li><a href="{% url 'privacy_policy' %}" class="text-white">Privacy Policy</a></li>
                     <li><a href="{% url 'terms_conditions' %}" class="text-white">Terms & Conditions</a></li>
                     <li><a href="{% url 'contact_us' %}" class="text-white">Contact</a></li>
                 </ul>
-
             </div>
-            <!-- Footer Right: Social Media Links -->
-            <div class="col-md-4">
 
+            <div class="col-md-3">
                 <a href="https://www.facebook.com" class="text-white mx-3" target="_blank">
                     <i class="fab fa-facebook-f"></i>
                 </a>
@@ -134,12 +158,57 @@ footer .fab:hover {
                     <i class="fab fa-linkedin-in"></i>
                 </a>
             </div>
+
+            <!-- Google Map Section -->
+            <div class="col-md-3">
+                <h5>Our Location</h5>
+                <div id="map" style="height: 150px; width: 100%;"></div>
             </div>
-
+        </div>
     </div>
-
-
 </footer>
+
+<!-- Google Maps API -->
+<script>
+    function initMap() {
+        const myLatLng = { lat: -1.9574, lng: 30.1044 }; // Kigali, Rwanda
+
+        const map = new google.maps.Map(document.getElementById("map"), {
+            center: myLatLng,
+            zoom: 14,
+        });
+
+        new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: "NewsWebsite Location",
+        });
+    }
+
+    // Load Google Maps API with API Key
+    const script = document.createElement("script");
+    script.src = "https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&callback=initMap";
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+</script>
+<div id="map" style="height: 150px; width: 100%;"></div>
+
+<!-- OpenStreetMap -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([-1.9574, 30.1044], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    L.marker([-1.9608174, 30.0635336]).addTo(map)
+        .bindPopup("We are here!")
+        .openPopup();
+</script>
+
 
 </body>
 </html>

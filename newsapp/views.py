@@ -31,6 +31,24 @@ def index(request):
     })
 
 
+# def home(request):
+#     a = News.objects.all()
+#     context = {'a': a}
+#     a = News.objects.all()
+#     context = {'a': a}
+#     if search := request.GET.get('search'):
+#         q = News.objects.filter(name__icontains=search)
+#         context['a'] = q
+#         context['search'] = search
+#         if not q:
+#             a = News.objects.all()
+#             context['a'] = a
+#             context['search'] = ''
+#             messages.success(request, 'No results found')
+#
+#     return render(request, 'base.html', context)
+
+
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(data=request.POST)
@@ -56,9 +74,10 @@ def signup_view(request):
     return render(request, 'signup.html', {'form': form})
 
 
-@login_required
-def home_view(request):
-    return render(request, 'home.html')
+# @login_required
+# def home_view(request):
+#     return render(request, 'home.html')
+
 
 @login_required
 def contact_us(request):
@@ -72,6 +91,7 @@ def contact_us(request):
         form = ContactForm()
 
     return render(request, 'contact_us.html', {'form': form})
+
 
 @login_required
 def news_list(request):
@@ -104,22 +124,10 @@ def article_detail(request, article_id):
 
 
 def search(request):
-    query = request.GET.get('query', '')
-    articles = Article.objects.all()
+    query = request.GET.get('q', '')
+    results = News.objects.filter(title__icontains=query) | News.objects.filter(content__icontains=query)
 
-    if query:
-        form = SearchForm(request.GET)
-        return render(request, 'base.html', {
-            'form': form,
-            'articles': articles,
-            'query': query
-        })
-
-    return render(request, 'base.html', {
-        'form': SearchForm(),
-        'articles': articles,
-
-    })
+    return render(request, 'base.html', {'results': results, 'query': query})
 
 
 VERIFICATION_CODES = {}
@@ -238,6 +246,7 @@ def manage_users(request):
     users = User.objects.filter(is_superuser=False)
     return render(request, 'manage_users.html', {'users': users})
 
+
 def reply_message(request, message_id):
     message = get_object_or_404(ContactMessage, pk=message_id)
     if request.method == 'POST':
@@ -330,3 +339,16 @@ def delete_account(request, user_id):
         return redirect('manage_users')
 
     return render(request, 'delete_account.html', {'user': user})
+
+
+def subscribe_view(request):
+    if request.method == "POST":
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+
+        # Save to the database (if using a model)
+        Subscriber.objects.create(name=name, email=email)
+
+        return JsonResponse({"message": "Subscription successful!"})  # AJAX response or use redirect
+
+    return render(request, 'base.html')

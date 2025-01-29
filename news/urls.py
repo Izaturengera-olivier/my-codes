@@ -18,7 +18,7 @@ urlpatterns = [
     path('contact/', contact_us, name='contact_us'),
     path('article/<int:article_id>/', article_detail, name='article_detail'),
     path('signup/', signup_view, name='signup'),
-    path('home/', home_view, name='home'),
+    # path('home/', home_view, name='home'),
     path('terms-conditions/', terms_conditions, name='terms_conditions'),
 
     path('news/<int:pk>/', news_detail, name='news_detail'),
@@ -35,6 +35,7 @@ urlpatterns = [
     path('manage-articles/', manage_articles, name='manage_articles'),
     path('manage-messages/', manage_messages, name='manage_messages'),
     path('manage-users/', manage_users, name='manage_users'),
+    path('subscribe/', subscribe_view, name='subscribe'),
     path('deactivate_user/<int:user_id>/', deactivate_user, name='deactivate_user'),
     path('activate_user/<int:user_id>/', activate_user, name='activate_user'),
     path('make_admin/<int:user_id>/', make_admin, name='make_admin'),

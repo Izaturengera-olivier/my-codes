@@ -1,21 +1,142 @@
+
 {% extends 'base.html' %}
 {% block content %}
-    <center>
-<div class="container mt-5">
-    <h1>Contact Us</h1>
-    <p>Have questions or feedback? Fill out the form below, and we’ll get back to you!</p>
-    <form method="POST" novalidate action="{% url 'contact_us' %}" class="mt-5" style="max-width: 500px; background-color:blue; padding: 20px; border-radius: 5px;color: white; ">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Send Message</button>
-    </form>
-    {% if messages %}
-        <div class="mt-3">
-            {% for message in messages %}
-                <div class="alert alert-success">{{ message }}</div>
+<style>
+/* CSS for contact page */
+.contact-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 3rem 0;
+    background-color: #f8f9fa;
+}
+
+.contact-form-wrapper {
+    background-color: #fff;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 600px;
+}
+
+.contact-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.25rem;
+    color: #343a40;
+    text-align: center;
+    font-weight: 600;
+}
+
+.contact-description {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.contact-form .form-group {
+    margin-bottom: 1.75rem;
+}
+
+.contact-form label {
+    font-weight: 500;
+    color: #343a40;
+    margin-bottom: 0.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 0.75rem;
+    font-size: 1rem;
+    width: 100%;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.contact-form .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.contact-button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+.contact-button:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.message-container .alert {
+    margin-top: 1rem;
+    border-radius: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .contact-form-wrapper {
+        padding: 2rem;
+    }
+
+    .contact-title {
+        font-size: 2rem;
+    }
+
+    .contact-description {
+        font-size: 1rem;
+    }
+}
+</style>
+
+<div class="container mt-5 contact-page">
+    <div class="contact-form-wrapper">
+        <h1 class="contact-title">Contact Us</h1>
+        <p class="contact-description">Have questions or feedback? Fill out the form below, and we’ll get back to you!</p>
+        <form method="POST" novalidate action="{% url 'contact_us' %}" class="mt-4 contact-form">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
             {% endfor %}
-        </div>
-    {% endif %}
+            <button type="submit" class="btn btn-primary contact-button">Send Message</button>
+        </form>
+
+        {% if messages %}
+            <div class="mt-3 message-container">
+                {% for message in messages %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 </div>
-    </center>
 {% endblock %}
